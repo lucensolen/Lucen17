@@ -47,8 +47,10 @@
   modeCreation.addEventListener('click', ()=>{ localStorage.setItem(modeKey,'Creation'); modeCreation.classList.add('active'); modeGuidance.classList.remove('active'); beam.style.animationDuration='1.5s'; });
   modeGuidance.addEventListener('click', ()=>{ localStorage.setItem(modeKey,'Guidance'); modeGuidance.classList.add('active'); modeCreation.classList.remove('active'); beam.style.animationDuration='3s'; });
 
-  function apiBase(){ return (localStorage.getItem(apiKey) || apiInput?.value || '').trim(); }
-
+  function apiBase(){ 
+  return (localStorage.getItem('lucen.api') || 'https://lucen17-backend.onrender.com'); 
+  }
+  
   async function getJSON(url){ const r=await fetch(url); if(!r.ok) throw new Error(`GET ${url} ${r.status}`); return r.json(); }
   async function postJSON(url,data){ const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}); if(!r.ok) throw new Error(`POST ${url} ${r.status}`); return r.json(); }
 
