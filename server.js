@@ -43,8 +43,25 @@ const gates = [
 
 // Optional Postgres (DATABASE_URL)
 let pool = null;
+let dbReady = false;
 if (process.env.DATABASE_URL) {
-  pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: process.env.PGSSL ? { rejectUnauthorized: false } : false });
+  pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+  });
+
+  // Create reflections table if missing
+  pool.query(`
+    CREATE TABLE IF NOT EXISTS reflections (
+      id SERIAL PRIMARY KEY,
+      text TEXT,
+      tone TEXT,
+      ts BIGINT,
+      deviceId TEXT
+    );
+  `)
+  .then(() => { dbReady = true; console.log("Lucen17 DB ready ✅"); })
+  .catch(err => console.error("DB init error:", err));
 }
 
 // Optional Stripe (STRIPE_SECRET_KEY)
@@ -54,34 +71,64 @@ if (process.env.STRIPE_SECRET_KEY) {
 
 // ---------------- API ----------------
 app.get("/health", (_req, res) => {
-  res.json({ ok: true, service: "lucen17", ts: Date.now(), db: !!pool, stripe: !!stripe });
+  res.json({
+    ok: true,
+    service: "lucen17",
+    ts: Date.now(),
+    db: !!dbReady,
+    stripe: !!stripe
+  });
 });
 
 app.get("/gates", (_req, res) => res.json({ gates }));
 
-// memory
+// ---------------- Memory (DB + fallback) ----------------
 app.get("/memory", async (req, res) => {
-  const limit = Math.min(parseInt(req.query.limit || "200", 10), 1000);
+  const limit = Math.min(parseInt(req.query.limit) || 50, 500);
+  try {
+    if (pool && dbReady) {
+      const result = await pool.query(
+        "SELECT text, tone, ts, deviceId FROM reflections ORDER BY ts DESC LIMIT $1",
+        [limit]
+      );
+      return res.json({ items: result.rows });
+    }
+  } catch (err) {
+    console.error("DB read error:", err.message);
+  }
+  // fallback
   const items = memory.slice(-limit);
   res.json({ items });
 });
 
 app.post("/memory", async (req, res) => {
-  const { text, tone, ts, deviceId } = req.body || {};
-  if (!text) return res.status(400).json({ error: "text required" });
-  // simple backend tone inference if missing
+  const { text, tone, ts, deviceId } = req.body;
+  if (!text) return res.status(400).json({ error: "Missing text" });
   const inferredTone = tone || inferTone(text);
-  const item = {
-    id: `${Date.now()}-${Math.random().toString(36).slice(2,8)}`,
+  const entry = {
     text: String(text).slice(0, 4000),
     tone: inferredTone,
     ts: Number(ts) || Date.now(),
     deviceId: deviceId || "web"
   };
-  memory.push(item);
+
+  try {
+    if (pool && dbReady) {
+      await pool.query(
+        "INSERT INTO reflections (text, tone, ts, deviceId) VALUES ($1, $2, $3, $4)",
+        [entry.text, entry.tone, entry.ts, entry.deviceId]
+      );
+      return res.json({ saved: true, entry, db: true });
+    }
+  } catch (err) {
+    console.error("DB write error:", err.message);
+  }
+
+  // fallback to file if DB fails
+  memory.push(entry);
   if (memory.length > 5000) memory.splice(0, memory.length - 5000);
   safeWriteJSON(MEMORY_PATH, memory);
-  res.json({ saved: true, item });
+  res.json({ saved: true, entry, db: false });
 });
 
 // tolls / payments
