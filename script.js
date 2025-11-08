@@ -118,21 +118,42 @@
     }catch{/* ignore */}
   }
 
-  async function logReflection(){
-    const text=(ta?.value||'').trim(); if(!text) return;
-    const tone=classifyTone(text);
-    const entry={ text, tone, ts: Date.now() };
+  // ---------------- Log Reflection (DB + Fallback) ----------------
+async function logReflection() {
+  const text = (ta?.value || "").trim();
+  if (!text) return alert("Enter a reflection first.");
 
-    // local-first
-    const arr = JSON.parse(localStorage.getItem(memoryKey)||'[]'); arr.push(entry);
-    localStorage.setItem(memoryKey, JSON.stringify(arr)); renderLocal(); ta.value='';
+  const tone = classifyTone(text);
+  const entry = { text, tone, ts: Date.now(), deviceId: "lucen17-ui" };
 
-    const base = apiBase();
-    if(base){ try{ await postJSON(`${base}/memory`, entry); await pullServerMemory(); }catch{} }
+  const base = apiBase() || "https://lucen17-backend.onrender.com";
 
-    // guidance drift influence
-    driftFromTone(tone);
+  try {
+    const res = await fetch(`${base}/memory`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(entry)
+    });
+    const data = await res.json();
+
+    if (data.saved) {
+      console.log("✅ Saved to Lucen Core:", data);
+    } else {
+      console.warn("⚠️ Backend save failed, keeping local copy.");
+    }
+  } catch (err) {
+    console.error("💾 Network error, fallback to local:", err);
   }
+
+  // Always keep local fallback copy
+  const arr = JSON.parse(localStorage.getItem(memoryKey) || "[]");
+  arr.push(entry);
+  if (arr.length > 5000) arr.splice(0, arr.length - 5000);
+  localStorage.setItem(memoryKey, JSON.stringify(arr));
+
+  // guidance drift influence
+  driftFromTone(tone);
+}
 
   // Guidance drift: adjust sliders based on tone and recent rhythm
   function driftFromTone(tone){
