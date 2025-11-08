@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Lucen17 Cockpit v1.8</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <header class="topbar">
+    <h1>Lucen17</h1>
+    <div class="beam" id="beam"></div>
+    <div class="status"><span id="onlineBadge">Offline</span></div>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="core" class="active">Core</button>
+    <button data-tab="divisions">Divisions</button>
+    <button data-tab="gates">Gates</button>
+  </nav>
+
+  <main>
+    <section class="panel active" id="core">
+      <div class="controls">
+        <div class="slider">
+          <label>Remembrance ⇄ Creation</label>
+          <input id="dialRC" type="range" min="0" max="100" value="50"/>
+        </div>
+        <div class="slider">
+          <label>Generation ⇄ Evolution</label>
+          <input id="dialGE" type="range" min="0" max="100" value="50"/>
+        </div>
+        <div class="mode">
+          <label>Mode</label>
+          <div class="mode-buttons">
+            <button id="modeCreation">Creation</button>
+            <button id="modeGuidance" class="active">Guidance</button>
+          </div>
+        </div>
+      </div>
+
+      <h2>Vision Lens</h2>
+      <textarea id="visionInput" placeholder="Type reflection..." rows="4"></textarea>
+      <div class="row">
+        <button id="logBtn">Log to Lucen Memory</button>
+      </div>
+      <h3>Lucen Memory</h3>
+      <div id="memoryList" class="list"></div>
+    </section>
+
+    <section class="panel" id="divisions">
+      <p>Divisions ready. (Hook energy/mood fields later.)</p>
+    </section>
+
+    <section class="panel" id="gates">
+      <h2>Gates</h2>
+      <div class="row">
+        <input id="apiBase" type="url" placeholder="https://YOUR-API.onrender.com"/>
+        <button id="saveApi">Save</button>
+      </div>
+      <div class="row">
+        <input id="payAmount" type="number" placeholder="3.00"/>
+        <select id="payGate">
+          <option value="dara">Dara</option>
+          <option value="vara">Vara</option>
+          <option value="rootline">RootLine</option>
+        </select>
+        <button id="payBtn">Pay Toll (test)</button>
+      </div>
+      <div id="gatesList" class="list"></div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
