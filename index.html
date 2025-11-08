@@ -48,26 +48,26 @@
       <div id="memoryList" class="list"></div>
     </section>
 
-    <section class="panel" id="divisions">
-      <p>Divisions ready. (Hook energy/mood fields later.)</p>
-    </section>
-
     <section class="panel" id="gates">
-      <h2>Gates</h2>
-      <div class="row">
-        <input id="apiBase" type="url" placeholder="https://YOUR-API.onrender.com"/>
-        <button id="saveApi">Save</button>
-      </div>
-      <div class="row">
-        <input id="payAmount" type="number" placeholder="3.00"/>
-        <select id="payGate">
-          <option value="dara">Dara</option>
-          <option value="vara">Vara</option>
-          <option value="rootline">RootLine</option>
-        </select>
-        <button id="payBtn">Pay Toll (test)</button>
-      </div>
-      <div id="gatesList" class="list"></div>
+  <h2>Gates</h2>
+  
+  <div class="row">
+    <label>Backend Link</label>
+    <input id="apiBase" type="url" placeholder="https://lucen17-backend.onrender.com">
+    <button id="saveApi">Save</button>
+  </div>
+
+  <div class="row">
+    <label>Pay Toll</label>
+    <input id="payAmount" type="number" value="3">
+    <select id="payGate">
+      <option value="dara">Dara Gate</option>
+      <option value="vara">Vara Gate</option>
+    </select>
+    <button id="payBtn">Pay Toll</button>
+  </div>
+
+  <div id="gatesList" class="list"></div>
     </section>
   </main>
 
