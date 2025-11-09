@@ -374,8 +374,6 @@ function updateBeamTone() {
   beam.style.transition = "background 1s linear, box-shadow 1s linear";
   beam.style.background = mixed;
   beam.style.boxShadow = `0 0 25px 6px ${mixed}`;
-} // ← must be here
-
 }
 
 // Attach live update listeners safely
