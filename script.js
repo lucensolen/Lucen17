@@ -126,13 +126,18 @@
   }
 }
 
-  // ---------------- Log Reflection (DB + Fallback) ----------------
+  // ------------------ Log Reflection (DB + Fallback + Instant UI Refresh) ------------------
 async function logReflection() {
   const text = (ta?.value || "").trim();
   if (!text) return alert("Enter a reflection first.");
 
   const tone = classifyTone(text);
-  const entry = { text, tone, ts: new Date().toISOString(), deviceId: "lucen17-ui" };
+  const entry = {
+    text,
+    tone,
+    ts: new Date().toISOString(),
+    deviceId: "lucen17-ui"
+  };
 
   const base = apiBase() || "https://lucen17-backend.onrender.com";
 
@@ -152,6 +157,24 @@ async function logReflection() {
   } catch (err) {
     console.error("💾 Network error, fallback to local:", err);
   }
+
+  // Always keep local fallback copy
+  const arr = JSON.parse(localStorage.getItem(memoryKey) || "[]");
+  arr.push(entry);
+  if (arr.length > 5000) arr.splice(0, arr.length - 5000);
+  localStorage.setItem(memoryKey, JSON.stringify(arr));
+
+  // Clear textarea and give click feedback
+  ta.value = "";
+  ta.placeholder = "✨ Logged!";
+  setTimeout(() => (ta.placeholder = "Type reflection..."), 1200);
+
+  // Refresh memory display instantly
+  renderLocal();
+
+  // Guidance drift influence
+  driftFromTone(tone);
+}
 
   // Always keep local fallback copy
   const arr = JSON.parse(localStorage.getItem(memoryKey) || "[]");
