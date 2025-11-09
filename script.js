@@ -305,7 +305,8 @@ function updateBeamTone() {
   const beam = document.getElementById("beam");
   if (!beam) return;
 
-  function updateBeamTone() {
+  // === Beam Tone Logic ===
+function updateBeamTone() {
   const beam = document.getElementById("beam");
   if (!beam) return;
 
@@ -315,24 +316,24 @@ function updateBeamTone() {
 
   if (moods.length === 0) return;
 
-  // Tone mapping
+  // --- Tone mapping ---
   let color = "#5aa7ff"; // calm default
   const text = moods.join(" ");
 
-  if (text.match(/calm|peace|balance/)) color = "#5aa7ff";
-  else if (text.match(/focus|clarity|discipline/)) color = "#50fa7b";
-  else if (text.match(/inspired|creative|gold/)) color = "#ffc857";
-  else if (text.match(/tired|low|drained/)) color = "#9b9b9b";
-  else if (text.match(/energy|alive|vibrant/)) color = "#ff6f61";
-  else if (text.match(/reflect|memory|depth/)) color = "#6a5acd";
+  if (text.match(/calm|peace|balance/)) color = "#5aa7ff";       // serene blue
+  else if (text.match(/focus|clarity|discipline/)) color = "#50fa7b"; // lucid green
+  else if (text.match(/inspired|creative|gold/)) color = "#ffc857";   // golden inspiration
+  else if (text.match(/tired|low|drained/)) color = "#9b9b9b";        // neutral grey
+  else if (text.match(/energy|alive|vibrant/)) color = "#ff6f61";     // coral energy
+  else if (text.match(/reflect|memory|depth/)) color = "#6a5acd";     // indigo remembrance
 
-  // Smooth blend + glow
+  // --- Smooth blend + glow ---
   beam.style.transition = "background 1.2s ease, box-shadow 1.2s ease";
   beam.style.setProperty("--beam-color", color);
   beam.style.background = `linear-gradient(90deg, ${color}, ${color}bb)`;
   beam.style.boxShadow = `0 0 30px 8px ${color}66`;
 
-  // Gentle pulse if multi-mood
+  // --- Gentle pulse if multiple moods ---
   if (moods.length > 1) {
     beam.animate(
       [
@@ -347,12 +348,12 @@ function updateBeamTone() {
       }
     );
   }
+}
 
-// Watch mood fields for live tone sync
+// === Listeners & Refresh ===
 document.querySelectorAll('[data-field="mood"]').forEach(inp => {
   inp.addEventListener("input", updateBeamTone);
 });
 
 // Periodic refresh (Guidance Mode breathing)
 setInterval(updateBeamTone, 5000);
-})();
