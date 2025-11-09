@@ -50,109 +50,183 @@
 <section class="panel" id="divisions">
   <h2>Divisions</h2>
 
-  <div class="division">
-    <h3>Field Ops</h3>
-    <p>Tracks physical work, land activity, and material flow.</p>
-    <ul>
-      <li>Farm OS</li>
-      <li>Sovereign Field</li>
-    </ul>
-    <label>Focus Hours</label><input type="number">
-    <label>Recent Wins</label><input type="text">
-    <label>Blockers</label><input type="text">
-    <label>Mood / Tone</label><input type="text">
-  </div>
+  <div class="division" data-division="fieldOps">
+  <h3>Field Ops</h3>
+  <p>Tracks physical work, land activity, and material flow.</p>
+  <ul>
+    <li>Farm OS</li>
+    <li>Sovereign Field</li>
+  </ul>
+
+  <label>Focus Hours</label>
+  <input data-field="focusHours" type="number">
+
+  <label>Recent Wins</label>
+  <input data-field="wins" type="text">
+
+  <label>Blockers</label>
+  <input data-field="blockers" type="text">
+
+  <label>Mood / Tone</label>
+  <input data-field="mood" type="text">
+</div>
+
 
   <div class="division">
-    <h3>Self-Sustain</h3>
-    <p>Monitors resources, finance, and personal autonomy.</p>
-    <ul>
-      <li>Purchase Tracker</li>
-      <li>Maintenance Manager</li>
-    </ul>
-    <label>Focus Hours</label><input type="number">
-    <label>Recent Wins</label><input type="text">
-    <label>Blockers</label><input type="text">
-    <label>Mood / Tone</label><input type="text">
-  </div>
+    <!-- Self-Sustain -->
+<div class="division" data-division="selfSustain">
+  <h3>Self-Sustain</h3>
+  <p>Monitors resources, finance, and personal autonomy.</p>
+  <ul>
+    <li>Purchase Tracker</li>
+    <li>Maintenance Manager</li>
+  </ul>
 
-  <div class="division">
-    <h3>Mind Rhythm</h3>
-    <p>Focus, clarity, and emotional rhythm tracking.</p>
-    <ul>
-      <li>MindSetFree</li>
-      <li>MindIron</li>
-    </ul>
-    <label>Focus Hours</label><input type="number">
-    <label>Recent Wins</label><input type="text">
-    <label>Blockers</label><input type="text">
-    <label>Mood / Tone</label><input type="text">
-  </div>
+  <label>Focus Hours</label>
+  <input data-field="focusHours" type="number">
 
-  <div class="division">
-    <h3>Education Flow</h3>
-    <p>Tracks learning evolution and educational growth.</p>
-    <ul>
-      <li>Learn Lume</li>
-      <li>TeachEasy</li>
-    </ul>
-    <label>Focus Hours</label><input type="number">
-    <label>Recent Wins</label><input type="text">
-    <label>Blockers</label><input type="text">
-    <label>Mood / Tone</label><input type="text">
-  </div>
+  <label>Recent Wins</label>
+  <input data-field="wins" type="text">
 
-  <div class="division">
-    <h3>Creative Ops</h3>
-    <p>Creative development, design, and brand resonance.</p>
-    <ul>
-      <li>BrandBull</li>
-      <li>PlanMore</li>
-    </ul>
-    <label>Focus Hours</label><input type="number">
-    <label>Recent Wins</label><input type="text">
-    <label>Blockers</label><input type="text">
-    <label>Mood / Tone</label><input type="text">
-  </div>
+  <label>Blockers</label>
+  <input data-field="blockers" type="text">
 
-  <div class="division">
-    <h3>Social Resonance</h3>
-    <p>Communication, outreach, and collaboration fields.</p>
-    <ul>
-      <li>Coach Buddy</li>
-      <li>Family Foundary</li>
-    </ul>
-    <label>Focus Hours</label><input type="number">
-    <label>Recent Wins</label><input type="text">
-    <label>Blockers</label><input type="text">
-    <label>Mood / Tone</label><input type="text">
-  </div>
+  <label>Mood / Tone</label>
+  <input data-field="mood" type="text">
+</div>
 
-  <div class="division">
-    <h3>Eco Systems</h3>
-    <p>Integrates sustainability and environmental balance.</p>
-    <ul>
-      <li>Farm OS</li>
-      <li>RealStates</li>
-    </ul>
-    <label>Focus Hours</label><input type="number">
-    <label>Recent Wins</label><input type="text">
-    <label>Blockers</label><input type="text">
-    <label>Mood / Tone</label><input type="text">
-  </div>
+<!-- Mind Rhythm -->
+<div class="division" data-division="mindRhythm">
+  <h3>Mind Rhythm</h3>
+  <p>Focus, clarity, and emotional rhythm tracking.</p>
+  <ul>
+    <li>MindSetFree</li>
+    <li>MindIron</li>
+  </ul>
 
-  <div class="division">
-    <h3>Business Line</h3>
-    <p>Tracks projects, outreach, and business resonance.</p>
-    <ul>
-      <li>Business Portal</li>
-      <li>SingleSolutions</li>
-    </ul>
-    <label>Focus Hours</label><input type="number">
-    <label>Recent Wins</label><input type="text">
-    <label>Blockers</label><input type="text">
-    <label>Mood / Tone</label><input type="text">
-  </div>
+  <label>Focus Hours</label>
+  <input data-field="focusHours" type="number">
+
+  <label>Recent Wins</label>
+  <input data-field="wins" type="text">
+
+  <label>Blockers</label>
+  <input data-field="blockers" type="text">
+
+  <label>Mood / Tone</label>
+  <input data-field="mood" type="text">
+</div>
+
+<!-- Education Flow -->
+<div class="division" data-division="educationFlow">
+  <h3>Education Flow</h3>
+  <p>Tracks learning evolution and educational evidence.</p>
+  <ul>
+    <li>Learn Lume</li>
+    <li>TeachEasy</li>
+  </ul>
+
+  <label>Focus Hours</label>
+  <input data-field="focusHours" type="number">
+
+  <label>Recent Wins</label>
+  <input data-field="wins" type="text">
+
+  <label>Blockers</label>
+  <input data-field="blockers" type="text">
+
+  <label>Mood / Tone</label>
+  <input data-field="mood" type="text">
+</div>
+
+<!-- Creative Ops -->
+<div class="division" data-division="creativeOps">
+  <h3>Creative Ops</h3>
+  <p>Creative development, design, and brand motion.</p>
+  <ul>
+    <li>BrandBull</li>
+    <li>PlanMore</li>
+  </ul>
+
+  <label>Focus Hours</label>
+  <input data-field="focusHours" type="number">
+
+  <label>Recent Wins</label>
+  <input data-field="wins" type="text">
+
+  <label>Blockers</label>
+  <input data-field="blockers" type="text">
+
+  <label>Mood / Tone</label>
+  <input data-field="mood" type="text">
+</div>
+
+<!-- Social Resonance -->
+<div class="division" data-division="socialResonance">
+  <h3>Social Resonance</h3>
+  <p>Communication, outreach, and collaboration cadence.</p>
+  <ul>
+    <li>Coach Buddy</li>
+    <li>Business Portal</li>
+  </ul>
+
+  <label>Focus Hours</label>
+  <input data-field="focusHours" type="number">
+
+  <label>Recent Wins</label>
+  <input data-field="wins" type="text">
+
+  <label>Blockers</label>
+  <input data-field="blockers" type="text">
+
+  <label>Mood / Tone</label>
+  <input data-field="mood" type="text">
+</div>
+
+<!-- Eco Systems -->
+<div class="division" data-division="ecoSystems">
+  <h3>Eco Systems</h3>
+  <p>Integrates sustainability and environmental flow.</p>
+  <ul>
+    <li>Farm OS</li>
+    <li>RealStates</li>
+  </ul>
+
+  <label>Focus Hours</label>
+  <input data-field="focusHours" type="number">
+
+  <label>Recent Wins</label>
+  <input data-field="wins" type="text">
+
+  <label>Blockers</label>
+  <input data-field="blockers" type="text">
+
+  <label>Mood / Tone</label>
+  <input data-field="mood" type="text">
+</div>
+
+<!-- Business Line -->
+<div class="division" data-division="businessLine">
+  <h3>Business Line</h3>
+  <p>Tracks projects, outreach, and business lifelines.</p>
+  <ul>
+    <li>Business Portal</li>
+    <li>SingleSolutions</li>
+  </ul>
+
+  <label>Focus Hours</label>
+  <input data-field="focusHours" type="number">
+
+  <label>Recent Wins</label>
+  <input data-field="wins" type="text">
+
+  <label>Blockers</label>
+  <input data-field="blockers" type="text">
+
+  <label>Mood / Tone</label>
+  <input data-field="mood" type="text">
+</div>
+
 </section>
 
     <section class="panel" id="gates">
