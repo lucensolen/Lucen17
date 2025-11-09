@@ -334,28 +334,48 @@ function updateBeamTone() {
     else if (/(reflect|memory|depth)/.test(text))     color = "#6a5acd"; // indigo
   }
 
-// Smooth blend toward new tone instead of instant jump
-const prev = beam.style.getPropertyValue("--beam-color") || "#999";
+function updateBeamTone() {
+  const beam = document.getElementById("beam");
+  if (!beam) return;
 
-// Helper to mix two hex colors
-function blend(a, b, t) {
-  const ca = parseInt(a.slice(1), 16);
-  const cb = parseInt(b.slice(1), 16);
-  const ra = (ca >> 16) & 255, ga = (ca >> 8) & 255, ba = ca & 255;
-  const rb = (cb >> 16) & 255, gb = (cb >> 8) & 255, bb = cb & 255;
-  const r = Math.round(ra + (rb - ra) * t);
-  const g = Math.round(ga + (gb - ga) * t);
-  const b = Math.round(ba + (bb - ba) * t);
-  return `rgb(${r},${g},${b})`;
-}
+  // Collect mood words ...
+  const moods = Array.from(document.querySelectorAll('[data-field="mood"]'))
+    .map(i => (i.value || "").toLowerCase().trim())
+    .filter(Boolean);
 
-// blend factor: 0.2 = 20 % toward new color each update
-const mixed = blend(prev, color, 0.2);
+  let color = "#999";
+  if (moods.length) {
+    const text = moods.join(" ");
+    if (/(calm|peace|balance)/.test(text)) color = "#5aa7ff";
+    else if (/(focus|clarity|discipline)/.test(text)) color = "#50fa7b";
+    else if (/(inspired|creative|gold)/.test(text)) color = "#ffc857";
+    else if (/(tired|low|drained)/.test(text)) color = "#9b9b9b";
+    else if (/(energy|alive|vibrant)/.test(text)) color = "#ff6f61";
+    else if (/(reflect|memory|depth)/.test(text)) color = "#6a5acd";
+  }
 
-beam.style.setProperty("--beam-color", mixed);
-beam.style.transition = "background 1s linear, box-shadow 1s linear";
-beam.style.background = mixed;
-beam.style.boxShadow = `0 0 25px 6px ${mixed}`;
+  // Smooth blend toward new tone instead of instant jump
+  const prev = beam.style.getPropertyValue("--beam-color") || "#999";
+
+  function blend(a, b, t) {
+    const ca = parseInt(a.slice(1), 16);
+    const cb = parseInt(b.slice(1), 16);
+    const ra = (ca >> 16) & 255, ga = (ca >> 8) & 255, ba = ca & 255;
+    const rb = (cb >> 16) & 255, gb = (cb >> 8) & 255, bb = cb & 255;
+    const r = Math.round(ra + (rb - ra) * t);
+    const g = Math.round(ga + (gb - ga) * t);
+    const b = Math.round(ba + (bb - ba) * t);
+    return `rgb(${r},${g},${b})`;
+  }
+
+  const mixed = blend(prev, color, 0.2);
+
+  beam.style.setProperty("--beam-color", mixed);
+  beam.style.transition = "background 1s linear, box-shadow 1s linear";
+  beam.style.background = mixed;
+  beam.style.boxShadow = `0 0 25px 6px ${mixed}`;
+} // ← must be here
+
 }
 
 // Attach live update listeners safely
