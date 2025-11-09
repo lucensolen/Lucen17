@@ -300,64 +300,62 @@ function computeBeamTone() {
   return `rgb(${r},${g},${b})`;
 }
 
-// Apply tone to beam
+// === Lucen Beam Tone (Stable Stage 4.3 — Safe + Minimal) ===
 function updateBeamTone() {
   const beam = document.getElementById("beam");
   if (!beam) return;
 
-  // === Beam Tone Logic ===
-// --- Beam tone (safe, non-blocking) ---
-function updateBeamToneSafe() {
-  try {
-    const beam = document.getElementById("beam");
-    if (!beam) return;
+  // Collect mood words from all mood inputs
+  const moods = Array.from(document.querySelectorAll('[data-field="mood"]'))
+    .map(i => (i.value || "").toLowerCase().trim())
+    .filter(Boolean);
 
-    // Collect mood text from all divisions
-    const text = Array.from(document.querySelectorAll('[data-field="mood"]'))
-      .map(i => (i.value || "").toLowerCase().trim())
-      .filter(Boolean)
-      .join(" ");
+  let color = "#999"; // neutral default
 
-    // Default if no mood text
-    if (!text) {
-      const fallback = "#5aa7ff"; // calm blue
-      beam.style.setProperty("--beam-color", fallback);
-      beam.style.background = `linear-gradient(90deg, ${fallback}, ${fallback}bb)`;
-      beam.style.boxShadow = `0 0 30px 8px ${fallback}66`;
-      return;
-    }
+  if (moods.length) {
+    const text = moods.join(" ");
 
-    // Keyword → color map (order matters)
-    let color = "#5aa7ff"; // calm
-    if (/\b(calm|peace|balance)\b/.test(text))             color = "#5aa7ff"; // blue
-    else if (/\b(focus|clarity|discipline)\b/.test(text))  color = "#50fa7b"; // green
-    else if (/\b(inspired|creative|gold)\b/.test(text))    color = "#ffc857"; // gold
-    else if (/\b(tired|low|drained)\b/.test(text))         color = "#9b9b9b"; // grey
-    else if (/\b(energy|alive|vibrant)\b/.test(text))      color = "#ff6f61"; // coral
-    else if (/\b(reflect|memory|depth)\b/.test(text))      color = "#6a5acd"; // indigo
-
-    // Apply with smooth transition
-    beam.style.transition = "background 1.2s ease, box-shadow 1.2s ease";
-    beam.style.setProperty("--beam-color", color);
-    beam.style.background = `linear-gradient(90deg, ${color}, ${color}bb)`;
-    beam.style.boxShadow = `0 0 30px 8px ${color}66`;
-  } catch (err) {
-    console.warn("updateBeamToneSafe error:", err);
+    if (/(calm|peace|balance)/.test(text))            color = "#5aa7ff"; // serene blue
+    else if (/(focus|clarity|discipline)/.test(text)) color = "#50fa7b"; // lucid green
+    else if (/(inspired|creative|gold)/.test(text))   color = "#ffc857"; // golden
+    else if (/(tired|low|drained)/.test(text))        color = "#9b9b9b"; // grey neutral
+    else if (/(energy|alive|vibrant)/.test(text))     color = "#ff6f61"; // coral
+    else if (/(reflect|memory|depth)/.test(text))     color = "#6a5acd"; // indigo
   }
+
+  // Apply tone smoothly
+  beam.style.transition = "background 1s linear, box-shadow 1s linear";
+  beam.style.setProperty("--beam-color", color);
+  beam.style.background = color;
+  beam.style.boxShadow = `0 0 25px 6px ${color}`;
 }
 
-// Wire listeners once (idempotent)
+// Attach live update listeners safely
 (function wireBeamTone() {
-  try {
-    const inputs = document.querySelectorAll('[data-field="mood"]');
-    inputs.forEach(inp => {
-      inp.removeEventListener("input", updateBeamToneSafe);
-      inp.addEventListener("input", updateBeamToneSafe);
-    });
-    // Initial run + gentle refresh for Guidance mode
-    updateBeamToneSafe();
-    setInterval(updateBeamToneSafe, 5000);
-  } catch (err) {
-    console.warn("wireBeamTone error:", err);
-  }
+  const inputs = document.querySelectorAll('[data-field="mood"]');
+  inputs.forEach(inp => {
+    inp.removeEventListener("input", updateBeamTone);
+    inp.addEventListener("input", updateBeamTone);
+  });
+
+  // Run immediately + periodic update (Guidance breathing)
+  updateBeamTone();
+  setInterval(updateBeamTone, 5000);
+})();
+
+// --- Division toggle logic (unchanged) ---
+function toggleDesc(btn) {
+  const p = btn.nextElementSibling;
+  p.style.display = p.style.display === "block" ? "none" : "block";
+}
+function toggleSeeds(btn) {
+  const ul = btn.nextElementSibling;
+  ul.style.display = ul.style.display === "block" ? "none" : "block";
+}
+
+// Initial paint
+(function init() {
+  renderLocal();
+  refreshOnline();
+})();
 })();
