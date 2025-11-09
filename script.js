@@ -260,4 +260,60 @@ function initDivisions() {
 }
 
 window.addEventListener('DOMContentLoaded', initDivisions);
+// === Lucen17 - Stage 4.3 Cross-Gate Sync (Lucen Chroma) ===
+
+// Basic mood-to-color map
+const moodColors = {
+  calm: "#4fc3f7",
+  focused: "#81c784",
+  tense: "#ffb74d",
+  inspired: "#ba68c8",
+  tired: "#e57373"
+};
+
+// Derive tone color from mood text
+function deriveTone(mood) {
+  if (!mood) return "#999";
+  const key = mood.toLowerCase().trim();
+  return moodColors[key] || "#999";
+}
+
+// Compute blended tone across all divisions
+function computeBeamTone() {
+  const values = Object.values(lucenDivisions)
+    .map(d => deriveTone(d.mood))
+    .filter(Boolean);
+
+  if (!values.length) return "#999";
+
+  // Simple average of RGB components
+  let r = 0, g = 0, b = 0;
+  values.forEach(hex => {
+    const c = parseInt(hex.slice(1), 16);
+    r += (c >> 16) & 255;
+    g += (c >> 8) & 255;
+    b += c & 255;
+  });
+  r = Math.round(r / values.length);
+  g = Math.round(g / values.length);
+  b = Math.round(b / values.length);
+  return `rgb(${r},${g},${b})`;
+}
+
+// Apply tone to beam
+function updateBeamTone() {
+  const beam = document.getElementById("beam");
+  if (!beam) return;
+  const tone = computeBeamTone();
+  beam.style.setProperty("--beam-color", tone);
+  beam.style.boxShadow = `0 0 25px 5px ${tone}`;
+}
+
+// Watch mood fields for live tone sync
+document.querySelectorAll('[data-field="mood"]').forEach(inp => {
+  inp.addEventListener("input", updateBeamTone);
+});
+
+// Periodic refresh (Guidance Mode breathing)
+setInterval(updateBeamTone, 5000);
 })();
