@@ -105,13 +105,15 @@
       if(Array.isArray(items)){
         const html = items.slice().reverse().map(i=>{
           const color = toneColor(i.tone||'Reflective');
-          const ts = new Date(i.ts||Date.now()).toLocaleString();
-          return `<div class="card">
-            <div class="tone">${i.tone||'Reflective'}</div>
-            <div class="ts">${ts}</div>
-            <div class="txt">${escapeHtml(i.text||'')}</div>
-            <div class="node ${color}"></div>
-          </div>`;
+          const ts = i.ts ? new Date(i.ts) : new Date();
+const displayDate = ts.toLocaleString();
+
+return `<div class="card">
+  <div class="tone">${i.tone || "Reflective"}</div>
+  <div class="ts">${displayDate}</div>
+  <div class="txt">${escapeHtml(i.text || "")}</div>
+  <div class="node ${color}"></div>
+</div>`;
         }).join('');
         list.innerHTML = html;
       }
