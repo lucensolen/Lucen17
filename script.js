@@ -304,9 +304,27 @@ function computeBeamTone() {
 function updateBeamTone() {
   const beam = document.getElementById("beam");
   if (!beam) return;
-  const tone = computeBeamTone();
-  beam.style.setProperty("--beam-color", tone);
-  beam.style.boxShadow = `0 0 25px 5px ${tone}`;
+
+  // Collect mood values from all mood inputs
+  const moods = Array.from(document.querySelectorAll('[data-field="mood"]'))
+    .map(i => i.value.toLowerCase().trim())
+    .filter(Boolean);
+
+  if (moods.length === 0) return;
+
+  // Keyword tone map
+  let color = "#5aa7ff"; // default calm blue
+  const text = moods.join(" ");
+
+  if (text.match(/calm|peace|balance/)) color = "#5aa7ff"; // serene blue
+  else if (text.match(/focus|clarity|discipline/)) color = "#50fa7b"; // lucid green
+  else if (text.match(/inspired|creative|gold/)) color = "#ffc857"; // golden inspiration
+  else if (text.match(/tired|low|drained/)) color = "#9b9b9b"; // grey neutral
+  else if (text.match(/energy|alive|vibrant/)) color = "#ff6f61"; // coral energy
+  else if (text.match(/reflect|memory|depth/)) color = "#6a5acd"; // indigo remembrance
+
+  beam.style.setProperty("--beam-color", color);
+  beam.style.boxShadow = `0 0 25px 5px ${color}`;
 }
 
 // Watch mood fields for live tone sync
