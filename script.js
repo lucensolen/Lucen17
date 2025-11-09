@@ -198,16 +198,6 @@ async function logReflection() {
   } catch (e) { alert("Payment failed"); }
 });
 
-// --- Division toggle logic ---
-function toggleDesc(btn) {
-  const p = btn.nextElementSibling;
-  p.style.display = p.style.display === "block" ? "none" : "block";
-}
-function toggleSeeds(btn) {
-  const ul = btn.nextElementSibling;
-  ul.style.display = ul.style.display === "block" ? "none" : "block";
-}
-
 // initial paint
 (function init() {
   renderLocal();
