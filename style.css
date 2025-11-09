@@ -34,3 +34,73 @@ button:hover{background:#243246}
 .node.orange{background:var(--orange)}
 .node.yellow{background:var(--yellow)}
 @keyframes nodePulse{0%{transform:scale(.9);opacity:.7}50%{transform:scale(1.15);opacity:1}100%{transform:scale(.9);opacity:.7}}
+
+/* === Division Panel Visuals === */
+
+.division {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  transition: background 0.2s ease;
+}
+
+.division:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.division h3 {
+  font-size: 1.1em;
+  margin-bottom: 6px;
+  color: #fff;
+}
+
+.division p {
+  font-size: 0.9em;
+  opacity: 0.8;
+  margin-bottom: 8px;
+}
+
+.division ul {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 8px;
+}
+
+.division ul li {
+  font-size: 0.85em;
+  opacity: 0.9;
+  margin: 3px 0;
+}
+
+.division label {
+  display: block;
+  font-size: 0.8em;
+  margin-top: 6px;
+  opacity: 0.8;
+}
+
+.division input[type="number"],
+.division input[type="text"] {
+  width: 100%;
+  margin-top: 2px;
+  margin-bottom: 6px;
+  padding: 6px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 0.85em;
+}
+
+.division input:focus {
+  outline: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* === General Panel Alignment === */
+
+.panel {
+  padding: 14px;
+  color: #fff;
+}
