@@ -334,7 +334,7 @@ function updateBeamTone() {
     else if (/(reflect|memory|depth)/.test(text))     color = "#6a5acd"; // indigo
   }
 
-  // Smooth blend toward new tone instead of instant jump
+// Smooth blend toward new tone instead of instant jump
 const prev = beam.style.getPropertyValue("--beam-color") || "#999";
 
 // Helper to mix two hex colors
