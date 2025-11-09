@@ -124,7 +124,7 @@ async function logReflection() {
   if (!text) return alert("Enter a reflection first.");
 
   const tone = classifyTone(text);
-  const entry = { text, tone, ts: Date.now(), deviceId: "lucen17-ui" };
+  const entry = { text, tone, ts: new Date().toISOString(), deviceId: "lucen17-ui" };
 
   const base = apiBase() || "https://lucen17-backend.onrender.com";
 
