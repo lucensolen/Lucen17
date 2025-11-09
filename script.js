@@ -213,4 +213,51 @@ function toggleSeeds(btn) {
   renderLocal();
   refreshOnline();
 })();
+// === Lucen 17 - Stage 4.2 Local Persistence ===
+
+// Default division structure
+const defaultDivisions = {
+  fieldOps:      { focusHours: '', wins: '', blockers: '', mood: '' },
+  selfSustain:   { focusHours: '', wins: '', blockers: '', mood: '' },
+  mindRhythm:    { focusHours: '', wins: '', blockers: '', mood: '' },
+  flowPlanning:  { focusHours: '', wins: '', blockers: '', mood: '' },
+  learningPulse: { focusHours: '', wins: '', blockers: '', mood: '' },
+  wellbeingLoop: { focusHours: '', wins: '', blockers: '', mood: '' },
+  familyField:   { focusHours: '', wins: '', blockers: '', mood: '' },
+  businessLine:  { focusHours: '', wins: '', blockers: '', mood: '' }
+};
+
+// Load divisions from localStorage or seed defaults
+let lucenDivisions = JSON.parse(localStorage.getItem('lucen.divisions')) || defaultDivisions;
+
+// Save divisions safely (debounced)
+function saveDivisions() {
+  try {
+    localStorage.setItem('lucen.divisions', JSON.stringify(lucenDivisions));
+  } catch (e) {
+    console.warn('Lucen17: Storage quota reached or write failed.', e);
+  }
+}
+
+// Initialize division fields on load
+function initDivisions() {
+  Object.keys(lucenDivisions).forEach(name => {
+    const section = document.querySelector(`[data-division="${name}"]`);
+    if (!section) return;
+
+    const fields = ['focusHours', 'wins', 'blockers', 'mood'];
+    fields.forEach(key => {
+      const input = section.querySelector(`[data-field="${key}"]`);
+      if (input) {
+        input.value = lucenDivisions[name][key] || '';
+        input.addEventListener('input', () => {
+          lucenDivisions[name][key] = input.value;
+          saveDivisions();
+        });
+      }
+    });
+  });
+}
+
+window.addEventListener('DOMContentLoaded', initDivisions);
 })();
