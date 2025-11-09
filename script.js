@@ -98,27 +98,33 @@
     }catch{ gatesList.innerHTML = '<div class="card">(gates unavailable)</div>'; }
   }
 
-  async function pullServerMemory(){
-    const base = apiBase(); if(!base) return;
-    try{
-      const { items } = await getJSON(`${base}/memory?limit=200`);
-      if(Array.isArray(items)){
-        const html = items.slice().reverse().map(i=>{
-          const color = toneColor(i.tone||'Reflective');
+  async function pullServerMemory() {
+  const base = apiBase(); 
+  if (!base) return;
+  try {
+    const items = await getJSON(`${base}/memory?limit=200`);
+    if (Array.isArray(items)) {
+      const html = items
+        .filter(i => i.text) // ignore empty
+        .sort((a, b) => b.ts - a.ts) // newest first
+        .map(i => {
+          const color = toneColor(i.tone || 'Reflective');
           const ts = i.ts ? new Date(i.ts) : new Date();
-const displayDate = ts.toLocaleString();
-
-return `<div class="card">
-  <div class="tone">${i.tone || "Reflective"}</div>
-  <div class="ts">${displayDate}</div>
-  <div class="txt">${escapeHtml(i.text || "")}</div>
-  <div class="node ${color}"></div>
-</div>`;
-        }).join('');
-        list.innerHTML = html;
-      }
-    }catch{/* ignore */}
+          const displayDate = ts.toLocaleString();
+          return `<div class="card">
+            <div class="tone">${i.tone || 'Reflective'}</div>
+            <div class="ts">${displayDate}</div>
+            <div class="txt">${escapeHtml(i.text || '')}</div>
+            <div class="node ${color}"></div>
+          </div>`;
+        })
+        .join('');
+      list.innerHTML = html;
+    }
+  } catch {
+    /* ignore */
   }
+}
 
   // ---------------- Log Reflection (DB + Fallback) ----------------
 async function logReflection() {
