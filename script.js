@@ -333,30 +333,7 @@ function updateBeamTone() {
     else if (/(energy|alive|vibrant)/.test(text))     color = "#ff6f61"; // coral
     else if (/(reflect|memory|depth)/.test(text))     color = "#6a5acd"; // indigo
   }
-
-// Smooth blend toward new tone instead of instant jump
-const prev = beam.style.getPropertyValue("--beam-color") || "#999";
-
-// Helper to mix two hex colors
-function blend(a, b2, t) {
-  const ca = parseInt(a.slice(1), 16);
-  const cb = parseInt(b2.slice(1), 16);
-  const ra = (ca >> 16) & 255, ga = (ca >> 8) & 255, ba = ca & 255;
-  const rb = (cb >> 16) & 255, gb = (cb >> 8) & 255, bb = cb & 255;
-  const r = Math.round(ra + (rb - ra) * t);
-  const g = Math.round(ga + (gb - ga) * t);
-  const b = Math.round(ba + (bb - ba) * t);
-  return `rgb(${r},${g},${b})`;
-}
-
-// blend factor: 0.2 = 20 % toward new color each update
-const mixed = blend(prev, color, 0.2);
-
-beam.style.setProperty("--beam-color", mixed);
-beam.style.transition = "background 1s linear, box-shadow 1s linear";
-beam.style.background = mixed;
-beam.style.boxShadow = `0 0 25px 6px ${mixed}`;
-}
+  
   
 // Attach live update listeners safely
 (function wireBeamTone() {
