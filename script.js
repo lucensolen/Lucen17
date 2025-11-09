@@ -175,17 +175,7 @@ async function logReflection() {
   // Guidance drift influence
   driftFromTone(tone);
 }
-
-  // Always keep local fallback copy
-  const arr = JSON.parse(localStorage.getItem(memoryKey) || "[]");
-  arr.push(entry);
-  if (arr.length > 5000) arr.splice(0, arr.length - 5000);
-  localStorage.setItem(memoryKey, JSON.stringify(arr));
-
-  // guidance drift influence
-  driftFromTone(tone);
-}
-
+  
   // Guidance drift: adjust sliders based on tone and recent rhythm
   function driftFromTone(tone){
     if ((localStorage.getItem(modeKey) || 'Guidance') !== 'Guidance') return;
