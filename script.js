@@ -351,7 +351,7 @@ function updateBeamTone() {
 
   // Run immediately + periodic update (Guidance breathing)
   updateBeamTone();
-  setInterval(updateBeamTone, 5000);
+  setInterval(updateBeamTone, 8000);
 })();
 
 // --- Division toggle logic (unchanged) ---
