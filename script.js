@@ -185,20 +185,32 @@ async function logReflection() {
   });
   logBtn?.addEventListener('click', logReflection);
 
-  payBtn?.addEventListener('click', async ()=>{
-    const base = apiBase(); if(!base){ alert('Save API first'); return; }
-    const amt = Number(payAmount.value || 3); const gate = payGate.value || 'dara';
-    try{
-      const r = await postJSON(`${base}/tolls/pay`, { gate, amount: amt, currency: 'GBP', metadata: { source: 'lucen17' } });
-      if (r.simulated) { alert('Simulated payment ok'); }
-      else if (r.client_secret){ alert('PaymentIntent created (test). Implement client confirm in Stripe.js later.'); }
-      else { alert('Payment response received.'); }
-    }catch(e){ alert('Payment failed'); }
-  });
+  payBtn?.addEventListener("click", async () => {
+  const base = apiBase(); 
+  if (!base) { alert("Save API first"); return; }
+  const amt = Number(payAmount.value || 3);
+  const gate = payGate.value;
+  try {
+    const r = await postJSON(`${base}/tolls/pay`, { gate, amount: amt, currency: "GBP" });
+    if (r.simulated) alert("Simulated payment ok");
+    else if (r.client_secret) alert("PaymentIntent created (test). Implement client confirm in Stripe.js later.");
+    else alert("Payment response received.");
+  } catch (e) { alert("Payment failed"); }
+});
 
-  // initial paint
-  (function init(){
-    renderLocal();
-    refreshOnline();
-  })();
+// --- Division toggle logic ---
+function toggleDesc(btn) {
+  const p = btn.nextElementSibling;
+  p.style.display = p.style.display === "block" ? "none" : "block";
+}
+function toggleSeeds(btn) {
+  const ul = btn.nextElementSibling;
+  ul.style.display = ul.style.display === "block" ? "none" : "block";
+}
+
+// initial paint
+(function init() {
+  renderLocal();
+  refreshOnline();
+})();
 })();
