@@ -356,7 +356,8 @@ beam.style.setProperty("--beam-color", mixed);
 beam.style.transition = "background 1s linear, box-shadow 1s linear";
 beam.style.background = mixed;
 beam.style.boxShadow = `0 0 25px 6px ${mixed}`;
-
+}
+  
 // Attach live update listeners safely
 (function wireBeamTone() {
   const inputs = document.querySelectorAll('[data-field="mood"]');
