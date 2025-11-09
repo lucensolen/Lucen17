@@ -305,27 +305,48 @@ function updateBeamTone() {
   const beam = document.getElementById("beam");
   if (!beam) return;
 
-  // Collect mood values from all mood inputs
+  function updateBeamTone() {
+  const beam = document.getElementById("beam");
+  if (!beam) return;
+
   const moods = Array.from(document.querySelectorAll('[data-field="mood"]'))
     .map(i => i.value.toLowerCase().trim())
     .filter(Boolean);
 
   if (moods.length === 0) return;
 
-  // Keyword tone map
-  let color = "#5aa7ff"; // default calm blue
+  // Tone mapping
+  let color = "#5aa7ff"; // calm default
   const text = moods.join(" ");
 
-  if (text.match(/calm|peace|balance/)) color = "#5aa7ff"; // serene blue
-  else if (text.match(/focus|clarity|discipline/)) color = "#50fa7b"; // lucid green
-  else if (text.match(/inspired|creative|gold/)) color = "#ffc857"; // golden inspiration
-  else if (text.match(/tired|low|drained/)) color = "#9b9b9b"; // grey neutral
-  else if (text.match(/energy|alive|vibrant/)) color = "#ff6f61"; // coral energy
-  else if (text.match(/reflect|memory|depth/)) color = "#6a5acd"; // indigo remembrance
+  if (text.match(/calm|peace|balance/)) color = "#5aa7ff";
+  else if (text.match(/focus|clarity|discipline/)) color = "#50fa7b";
+  else if (text.match(/inspired|creative|gold/)) color = "#ffc857";
+  else if (text.match(/tired|low|drained/)) color = "#9b9b9b";
+  else if (text.match(/energy|alive|vibrant/)) color = "#ff6f61";
+  else if (text.match(/reflect|memory|depth/)) color = "#6a5acd";
 
+  // Smooth blend + glow
+  beam.style.transition = "background 1.2s ease, box-shadow 1.2s ease";
   beam.style.setProperty("--beam-color", color);
-  beam.style.boxShadow = `0 0 25px 5px ${color}`;
-}
+  beam.style.background = `linear-gradient(90deg, ${color}, ${color}bb)`;
+  beam.style.boxShadow = `0 0 30px 8px ${color}66`;
+
+  // Gentle pulse if multi-mood
+  if (moods.length > 1) {
+    beam.animate(
+      [
+        { opacity: 0.9, transform: "scale(1)" },
+        { opacity: 0.7, transform: "scale(0.98)" },
+        { opacity: 0.9, transform: "scale(1)" }
+      ],
+      {
+        duration: 4000,
+        iterations: Infinity,
+        easing: "ease-in-out"
+      }
+    );
+  }
 
 // Watch mood fields for live tone sync
 document.querySelectorAll('[data-field="mood"]').forEach(inp => {
