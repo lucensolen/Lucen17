@@ -363,4 +363,3 @@ function toggleSeeds(btn) {
   renderLocal();
   refreshOnline();
 })();
-})();
