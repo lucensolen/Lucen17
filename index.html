@@ -1,203 +1,76 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Lucen17 Cockpit v1.8</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
+  <header class="topbar">
+    <h1>Lucen17</h1>
+    <div class="beam" id="beam"></div>
+    <div class="status"><span id="onlineBadge">Offline</span></div>
+  </header>
 
-<header class="topbar">
-  <h1>Lucen17</h1>
-  <div class="status"><span id="onlineBadge">Offline</span></div>
-</header>
+  <nav class="tabs">
+    <button data-tab="core" class="active">Core</button>
+    <button data-tab="divisions">Divisions</button>
+    <button data-tab="gates">Gates</button>
+  </nav>
 
-<nav class="tabs">
-  <button data-tab="core" class="active">Core</button>
-  <button data-tab="divisions">Divisions</button>
-  <button data-tab="gates">Gates</button>
-</nav>
-
-<main>
-
-  <!-- Core Panel -->
-  <section class="panel active" id="core">
-    <div class="controls">
-      <div class="slider">
-        <label>Remembrance ⇄ Creation</label>
-        <input id="dialRC" type="range" min="0" max="100" value="50" />
-      </div>
-      <div class="slider">
-        <label>Generation ⇄ Evolution</label>
-        <input id="dialGE" type="range" min="0" max="100" value="50" />
-      </div>
-      <div class="mode">
-        <label>Mode</label>
-        <div class="mode-buttons">
-          <button id="modeCreation">Creation</button>
-          <button id="modeGuidance" class="active">Guidance</button>
+  <main>
+    <section class="panel active" id="core">
+      <div class="controls">
+        <div class="slider">
+          <label>Remembrance ⇄ Creation</label>
+          <input id="dialRC" type="range" min="0" max="100" value="50"/>
+        </div>
+        <div class="slider">
+          <label>Generation ⇄ Evolution</label>
+          <input id="dialGE" type="range" min="0" max="100" value="50"/>
+        </div>
+        <div class="mode">
+          <label>Mode</label>
+          <div class="mode-buttons">
+            <button id="modeCreation">Creation</button>
+            <button id="modeGuidance" class="active">Guidance</button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <h2>Vision Lens</h2>
-    <textarea id="visionInput" placeholder="Type reflection..." rows="4"></textarea>
-    <div class="row">
-      <button id="logBtn">Log to Lucen Memory</button>
-    </div>
-    <h3>Lucen Memory</h3>
-    <div id="memoryList" class="list"></div>
-  </section>
+      <h2>Vision Lens</h2>
+      <textarea id="visionInput" placeholder="Type reflection..." rows="4"></textarea>
+      <div class="row">
+        <button id="logBtn">Log to Lucen Memory</button>
+      </div>
+      <h3>Lucen Memory</h3>
+      <div id="memoryList" class="list"></div>
+    </section>
 
-  <!-- Divisions Panel -->
-  <section class="panel" id="divisions">
-    <h2>Divisions</h2>
+    <section class="panel" id="gates">
+  <h2>Gates</h2>
+  
+  <div class="row">
+    <label>Backend Link</label>
+    <input id="apiBase" type="url" placeholder="https://lucen17-backend.onrender.com">
+    <button id="saveApi">Save</button>
+  </div>
 
-    <div class="division" id="fieldOps">
-      <h3>Field Ops</h3>
-      <button class="toggle" onclick="toggleDesc(this)">Core Purpose</button>
-      <p class="desc">Tracks physical work, land activity, and material flow.</p>
-      <button class="toggle" onclick="toggleSeeds(this)">Feeds / Draws</button>
-      <ul class="seeds">
-        <li>Farm OS</li>
-        <li>RealStates</li>
-      </ul>
-      <label>Focus Hours</label><input type="number">
-      <label>Recent Wins</label><input type="text">
-      <label>Blockers</label><input type="text">
-      <label>Mood / Tone</label><input type="text">
-    </div>
+  <div class="row">
+    <label>Pay Toll</label>
+    <input id="payAmount" type="number" value="3">
+    <select id="payGate">
+      <option value="dara">Dara Gate</option>
+      <option value="vara">Vara Gate</option>
+    </select>
+    <button id="payBtn">Pay Toll</button>
+  </div>
 
-    <div class="division" id="selfSustain">
-      <h3>Self-Sustain</h3>
-      <button class="toggle" onclick="toggleDesc(this)">Core Purpose</button>
-      <p class="desc">Monitors resources, finance, and personal autonomy.</p>
-      <button class="toggle" onclick="toggleSeeds(this)">Feeds / Draws</button>
-      <ul class="seeds">
-        <li>Sovereign Field</li>
-        <li>Purchase Tracker</li>
-      </ul>
-      <label>Focus Hours</label><input type="number">
-      <label>Recent Wins</label><input type="text">
-      <label>Blockers</label><input type="text">
-      <label>Mood / Tone</label><input type="text">
-    </div>
+  <div id="gatesList" class="list"></div>
+    </section>
+  </main>
 
-    <div class="division" id="mindRhythm">
-      <h3>Mind Rhythm</h3>
-      <button class="toggle" onclick="toggleDesc(this)">Core Purpose</button>
-      <p class="desc">Focus, clarity, and emotional rhythm tracking.</p>
-      <button class="toggle" onclick="toggleSeeds(this)">Feeds / Draws</button>
-      <ul class="seeds">
-        <li>Mind Set Free</li>
-        <li>Mind Iron</li>
-        <li>Learn Lume (focus data)</li>
-      </ul>
-      <label>Focus Hours</label><input type="number">
-      <label>Recent Wins</label><input type="text">
-      <label>Blockers</label><input type="text">
-      <label>Mood / Tone</label><input type="text">
-    </div>
-
-    <div class="division" id="educationFlow">
-      <h3>Education Flow</h3>
-      <button class="toggle" onclick="toggleDesc(this)">Core Purpose</button>
-      <p class="desc">Tracks study time, learning evolution, and educational growth.</p>
-      <button class="toggle" onclick="toggleSeeds(this)">Feeds / Draws</button>
-      <ul class="seeds">
-        <li>Learn Lume</li>
-        <li>Teach Easy</li>
-      </ul>
-      <label>Focus Hours</label><input type="number">
-      <label>Recent Wins</label><input type="text">
-      <label>Blockers</label><input type="text">
-      <label>Mood / Tone</label><input type="text">
-    </div>
-
-    <div class="division" id="creativeOps">
-      <h3>Creative Ops</h3>
-      <button class="toggle" onclick="toggleDesc(this)">Core Purpose</button>
-      <p class="desc">Handles creative development, design, and brand resonance.</p>
-      <button class="toggle" onclick="toggleSeeds(this)">Feeds / Draws</button>
-      <ul class="seeds">
-        <li>Coach Buddy</li>
-        <li>Brand Bull</li>
-      </ul>
-      <label>Focus Hours</label><input type="number">
-      <label>Recent Wins</label><input type="text">
-      <label>Blockers</label><input type="text">
-      <label>Mood / Tone</label><input type="text">
-    </div>
-
-    <div class="division" id="socialResonance">
-      <h3>Social Resonance</h3>
-      <button class="toggle" onclick="toggleDesc(this)">Core Purpose</button>
-      <p class="desc">Manages communication, outreach, and collaboration fields.</p>
-      <button class="toggle" onclick="toggleSeeds(this)">Feeds / Draws</button>
-      <ul class="seeds">
-        <li>Dara Gate</li>
-        <li>Vara Gate</li>
-      </ul>
-      <label>Focus Hours</label><input type="number">
-      <label>Recent Wins</label><input type="text">
-      <label>Blockers</label><input type="text">
-      <label>Mood / Tone</label><input type="text">
-    </div>
-
-    <div class="division" id="ecoSystems">
-      <h3>Eco Systems</h3>
-      <button class="toggle" onclick="toggleDesc(this)">Core Purpose</button>
-      <p class="desc">Integrates sustainability, land care, and environmental balance.</p>
-      <button class="toggle" onclick="toggleSeeds(this)">Feeds / Draws</button>
-      <ul class="seeds">
-        <li>Farm OS</li>
-        <li>RealStates</li>
-      </ul>
-      <label>Focus Hours</label><input type="number">
-      <label>Recent Wins</label><input type="text">
-      <label>Blockers</label><input type="text">
-      <label>Mood / Tone</label><input type="text">
-    </div>
-
-    <div class="division" id="businessLine">
-      <h3>Business Line</h3>
-      <button class="toggle" onclick="toggleDesc(this)">Core Purpose</button>
-      <p class="desc">Tracks projects, outreach, and business resonance.</p>
-      <button class="toggle" onclick="toggleSeeds(this)">Feeds / Draws</button>
-      <ul class="seeds">
-        <li>Business Portal</li>
-        <li>Plan More</li>
-      </ul>
-      <label>Focus Hours</label><input type="number">
-      <label>Recent Wins</label><input type="text">
-      <label>Blockers</label><input type="text">
-      <label>Mood / Tone</label><input type="text">
-    </div>
-  </section>
-
-  <!-- Gates Panel -->
-  <section class="panel" id="gates">
-    <h2>Gates</h2>
-    <div class="row">
-      <label>Backend Link</label>
-      <input id="apiBase" type="url" placeholder="https://lucen17-backend.onrender.com" />
-      <button id="saveApi">Save</button>
-    </div>
-    <div class="row">
-      <label>Pay Toll</label>
-      <input id="payAmount" type="number" value="3" />
-      <select id="payGate">
-        <option value="dara">Dara Gate</option>
-        <option value="vara">Vara Gate</option>
-      </select>
-      <button id="payBtn">Pay Toll</button>
-    </div>
-    <div id="gatesList" class="list"></div>
-  </section>
-
-</main>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
