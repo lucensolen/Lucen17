@@ -306,54 +306,58 @@ function updateBeamTone() {
   if (!beam) return;
 
   // === Beam Tone Logic ===
-function updateBeamTone() {
-  const beam = document.getElementById("beam");
-  if (!beam) return;
+// --- Beam tone (safe, non-blocking) ---
+function updateBeamToneSafe() {
+  try {
+    const beam = document.getElementById("beam");
+    if (!beam) return;
 
-  const moods = Array.from(document.querySelectorAll('[data-field="mood"]'))
-    .map(i => i.value.toLowerCase().trim())
-    .filter(Boolean);
+    // Collect mood text from all divisions
+    const text = Array.from(document.querySelectorAll('[data-field="mood"]'))
+      .map(i => (i.value || "").toLowerCase().trim())
+      .filter(Boolean)
+      .join(" ");
 
-  if (moods.length === 0) return;
+    // Default if no mood text
+    if (!text) {
+      const fallback = "#5aa7ff"; // calm blue
+      beam.style.setProperty("--beam-color", fallback);
+      beam.style.background = `linear-gradient(90deg, ${fallback}, ${fallback}bb)`;
+      beam.style.boxShadow = `0 0 30px 8px ${fallback}66`;
+      return;
+    }
 
-  // --- Tone mapping ---
-  let color = "#5aa7ff"; // calm default
-  const text = moods.join(" ");
+    // Keyword → color map (order matters)
+    let color = "#5aa7ff"; // calm
+    if (/\b(calm|peace|balance)\b/.test(text))             color = "#5aa7ff"; // blue
+    else if (/\b(focus|clarity|discipline)\b/.test(text))  color = "#50fa7b"; // green
+    else if (/\b(inspired|creative|gold)\b/.test(text))    color = "#ffc857"; // gold
+    else if (/\b(tired|low|drained)\b/.test(text))         color = "#9b9b9b"; // grey
+    else if (/\b(energy|alive|vibrant)\b/.test(text))      color = "#ff6f61"; // coral
+    else if (/\b(reflect|memory|depth)\b/.test(text))      color = "#6a5acd"; // indigo
 
-  if (text.match(/calm|peace|balance/)) color = "#5aa7ff";       // serene blue
-  else if (text.match(/focus|clarity|discipline/)) color = "#50fa7b"; // lucid green
-  else if (text.match(/inspired|creative|gold/)) color = "#ffc857";   // golden inspiration
-  else if (text.match(/tired|low|drained/)) color = "#9b9b9b";        // neutral grey
-  else if (text.match(/energy|alive|vibrant/)) color = "#ff6f61";     // coral energy
-  else if (text.match(/reflect|memory|depth/)) color = "#6a5acd";     // indigo remembrance
-
-  // --- Smooth blend + glow ---
-  beam.style.transition = "background 1.2s ease, box-shadow 1.2s ease";
-  beam.style.setProperty("--beam-color", color);
-  beam.style.background = `linear-gradient(90deg, ${color}, ${color}bb)`;
-  beam.style.boxShadow = `0 0 30px 8px ${color}66`;
-
-  // --- Gentle pulse if multiple moods ---
-  if (moods.length > 1) {
-    beam.animate(
-      [
-        { opacity: 0.9, transform: "scale(1)" },
-        { opacity: 0.7, transform: "scale(0.98)" },
-        { opacity: 0.9, transform: "scale(1)" }
-      ],
-      {
-        duration: 4000,
-        iterations: Infinity,
-        easing: "ease-in-out"
-      }
-    );
+    // Apply with smooth transition
+    beam.style.transition = "background 1.2s ease, box-shadow 1.2s ease";
+    beam.style.setProperty("--beam-color", color);
+    beam.style.background = `linear-gradient(90deg, ${color}, ${color}bb)`;
+    beam.style.boxShadow = `0 0 30px 8px ${color}66`;
+  } catch (err) {
+    console.warn("updateBeamToneSafe error:", err);
   }
 }
 
-// === Listeners & Refresh ===
-document.querySelectorAll('[data-field="mood"]').forEach(inp => {
-  inp.addEventListener("input", updateBeamTone);
-});
-
-// Periodic refresh (Guidance Mode breathing)
-setInterval(updateBeamTone, 5000);
+// Wire listeners once (idempotent)
+(function wireBeamTone() {
+  try {
+    const inputs = document.querySelectorAll('[data-field="mood"]');
+    inputs.forEach(inp => {
+      inp.removeEventListener("input", updateBeamToneSafe);
+      inp.addEventListener("input", updateBeamToneSafe);
+    });
+    // Initial run + gentle refresh for Guidance mode
+    updateBeamToneSafe();
+    setInterval(updateBeamToneSafe, 5000);
+  } catch (err) {
+    console.warn("wireBeamTone error:", err);
+  }
+})();
