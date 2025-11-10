@@ -440,8 +440,10 @@ window.addEventListener("message", ev => {
 // 5️⃣ Keep gates synced every few seconds.
 setInterval(broadcastLucenState, 6000);
 
-// 6️⃣ Initialize gates UI on load.
-window.addEventListener("DOMContentLoaded", renderGatesUI);
+// Delay to ensure DOM is ready before building gates
+window.addEventListener("DOMContentLoaded", () => {
+  setTimeout(renderGatesUI, 500);
+});
 
   // Initial paint
   (function init() {
