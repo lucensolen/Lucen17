@@ -234,7 +234,17 @@ async function syncCoreMemory() {
   try {
     const res = await fetch(`${base}/memory`);
     if (!res.ok) throw new Error("syncCoreMemory failed");
-    const serverItems = await res.json();
+    let serverItems = await res.json();
+if (serverItems && !Array.isArray(serverItems)) {
+  // Handle possible wrapped structure { items: [...] }
+  if (Array.isArray(serverItems.items)) {
+    serverItems = serverItems.items;
+  } else {
+    console.warn("Lucen17 Core Bridge: unexpected server format:", serverItems);
+    serverItems = [];
+  }
+}
+
 
     const localItems = JSON.parse(localStorage.getItem(memoryKey) || "[]");
 
