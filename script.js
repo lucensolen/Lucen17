@@ -269,6 +269,11 @@ async function syncCoreMemory() {
     if (!res.ok) throw new Error("syncCoreMemory failed");
     const serverItems = await res.json();
 
+if (!Array.isArray(serverItems)) {
+  console.warn("Lucen17 Core Bridge: serverItems not array, skipping sync", serverItems);
+  return;
+}
+
     const localItems = JSON.parse(localStorage.getItem(memoryKey) || "[]");
 
     // merge unique reflections by timestamp
