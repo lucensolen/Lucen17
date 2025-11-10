@@ -367,6 +367,82 @@
     ul.style.display = (ul.style.display === 'block' ? 'none' : 'block');
   };
 
+// === Lucen17 – Stage 4.5 Core Bridge Integration ===
+
+// 1️⃣ Gate registry – where the 4 starter apps will live.
+const lucenGates = [
+  { name: "MindSetFree", key: "mindset", url: "https://placeholder.local/mindsetfree" },
+  { name: "PlanMore",    key: "planmore", url: "https://placeholder.local/planmore" },
+  { name: "DietDiary",   key: "diet",     url: "https://placeholder.local/dietdiary" },
+  { name: "LearnLume",   key: "learn",    url: "https://placeholder.local/learnlume" }
+];
+
+// 2️⃣ Build simple UI cards under the existing gates list.
+function renderGatesUI() {
+  const wrap = document.getElementById("gatesList");
+  if (!wrap) return;
+  wrap.innerHTML = lucenGates
+    .map(
+      g => `
+      <div class="card gate-card" data-gate="${g.key}">
+        <b>${g.name}</b>
+        <button class="openGate" data-url="${g.url}">Open</button>
+        <span class="status" id="status-${g.key}" style="float:right;opacity:.7">idle</span>
+      </div>`
+    )
+    .join("");
+
+  // click handlers
+  wrap.querySelectorAll(".openGate").forEach(btn =>
+    btn.addEventListener("click", e => {
+      const url = e.target.dataset.url;
+      window.open(url, "_blank");
+    })
+  );
+}
+
+// 3️⃣ Broadcast current tone + latest reflection to all gates.
+function broadcastLucenState() {
+  const beamColor =
+    getComputedStyle(document.getElementById("beam")).backgroundColor ||
+    "#999999";
+
+  const memory = JSON.parse(localStorage.getItem("lucen.memory") || "[]");
+  const last = memory.length ? memory[memory.length - 1] : { text: "", tone: "Reflective" };
+
+  const payload = {
+    beamColor,
+    lastReflection: last.text,
+    tone: last.tone,
+    ts: Date.now()
+  };
+
+  // save to localStorage so child apps can read it
+  localStorage.setItem("lucen.bridge.state", JSON.stringify(payload));
+
+  // lightweight postMessage broadcast (used when gates are open in other tabs)
+  window.postMessage({ type: "lucenUpdate", payload }, "*");
+}
+
+// 4️⃣ Listen for returning reflections from gates.
+window.addEventListener("message", ev => {
+  if (!ev.data || ev.data.type !== "lucenReturn") return;
+  const entry = ev.data.payload;
+  if (!entry || !entry.text) return;
+
+  // push reflection from gate into local memory
+  const arr = JSON.parse(localStorage.getItem("lucen.memory") || "[]");
+  arr.push(entry);
+  localStorage.setItem("lucen.memory", JSON.stringify(arr));
+  renderLocal();
+});
+
+// 5️⃣ Keep gates synced every few seconds.
+setInterval(broadcastLucenState, 6000);
+
+// 6️⃣ Initialize gates UI on load.
+window.addEventListener("DOMContentLoaded", renderGatesUI);
+
   // Initial paint
   (function init() {
     renderLocal();
