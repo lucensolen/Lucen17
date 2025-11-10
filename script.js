@@ -552,5 +552,6 @@ window.addEventListener("DOMContentLoaded", () => {
   (function init() {
     renderLocal();
     refreshOnline();
+    syncCoreMemory();
   })();
 })();
