@@ -560,6 +560,45 @@ function pulseCoreSync() {
   setTimeout(() => (dot.style.color = "#888"), 1200); // fade back to grey
 }
 
+// === Stage 4.5 — Lucen Core Dot Evolution ===
+
+// Track incoming Lucen updates (for gentle glow)
+let inboundActivity = 0;
+
+// Listen for network or gate messages (future modules use this)
+window.addEventListener("message", ev => {
+  if (ev.data?.type === "lucenUpdate") inboundActivity++;
+});
+
+// Soft breathing loop – adjusts glow based on inbound activity
+setInterval(() => {
+  const dot = document.getElementById("coreSyncDot");
+  if (!dot) return;
+
+  // map activity 0–10 -> intensity 0–1
+  const intensity = Math.min(1, inboundActivity / 10);
+
+  // apply gentle cyan glow that fades as activity drops
+  dot.style.boxShadow = `0 0 ${4 + intensity * 6}px ${intensity * 0.4}px rgba(0,255,255,${0.3 + intensity * 0.3})`;
+  dot.style.color = intensity > 0 ? "#0ff" : "#888";
+
+  // decay activity gradually
+  inboundActivity = Math.max(0, inboundActivity - 1);
+}, 5000);
+
+// Click to request world map (What3States / RealStates hook)
+document.addEventListener("DOMContentLoaded", () => {
+  const dot = document.getElementById("coreSyncDot");
+  if (dot) {
+    dot.style.cursor = "pointer";
+    dot.title = "Open Lucen World Map (future)";
+    dot.addEventListener("click", () => {
+      window.postMessage({ type: "lucenMapRequest" }, "*");
+      alert("🌍 Lucen World Map: coming online soon.");
+    });
+  }
+});
+
   // Initial paint
   (function init() {
     renderLocal();
