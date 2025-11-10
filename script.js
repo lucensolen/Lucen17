@@ -246,7 +246,21 @@ async function syncCoreMemory() {
     updateSyncIndicator(false);
   }
 }
-  
+ function updateSyncIndicator(ok) {
+  const badge = document.getElementById("onlineBadge");
+  if (!badge) return;
+  let dot = document.getElementById("coreSyncDot");
+  if (!dot) {
+    dot = document.createElement("span");
+    dot.id = "coreSyncDot";
+    dot.textContent = "•";
+    dot.style.marginLeft = "6px";
+    dot.style.fontSize = "18px";
+    badge.appendChild(dot);
+  }
+  dot.style.color = ok ? "#4caf50" : "#999";
+}
+ 
   // Guidance drift
   function driftFromTone(tone) {
     if ((localStorage.getItem(modeKey) || 'Guidance') !== 'Guidance') return;
