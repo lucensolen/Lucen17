@@ -445,6 +445,60 @@ window.addEventListener("DOMContentLoaded", () => {
   setTimeout(renderGatesUI, 500);
 });
 
+// === Lucen17 - Stage 4.6 Bridge Pulse Verification ===
+// Purpose: Keep cockpit and connected gates in rhythm (tone + reflection exchange)
+
+(function bridgePulse() {
+  const BRIDGE_KEY = "lucen.bridge.state";
+  const INTERVAL = 6000; // every 6s
+
+  // --- Send pulse from cockpit to all gates ---
+  function broadcastPulse() {
+    const beam = document.getElementById("beam");
+    const beamColor =
+      getComputedStyle(beam).backgroundColor || "#999999";
+
+    // grab the last logged reflection
+    const memory =
+      JSON.parse(localStorage.getItem("lucen.memory") || "[]") || [];
+    const last =
+      memory.length > 0
+        ? memory[memory.length - 1]
+        : { text: "", tone: "Reflective" };
+
+    const payload = {
+      beamColor,
+      lastReflection: last.text,
+      tone: last.tone,
+      ts: Date.now(),
+    };
+
+    // save for local reference
+    localStorage.setItem(BRIDGE_KEY, JSON.stringify(payload));
+
+    // postMessage broadcast for open child windows
+    window.postMessage({ type: "lucenUpdate", payload }, "*");
+  }
+
+  // --- Receive data back from gates (reflections or mood sync) ---
+  window.addEventListener("message", (ev) => {
+    if (!ev.data || ev.data.type !== "lucenReturn") return;
+    const entry = ev.data.payload;
+    if (!entry || !entry.text) return;
+
+    const arr = JSON.parse(localStorage.getItem("lucen.memory") || "[]");
+    arr.push(entry);
+    localStorage.setItem("lucen.memory", JSON.stringify(arr));
+
+    // refresh immediately so cockpit shows the new reflection
+    if (typeof renderLocal === "function") renderLocal();
+  });
+
+  // --- Periodic pulse loop ---
+  setInterval(broadcastPulse, INTERVAL);
+  broadcastPulse(); // run immediately on load
+})();
+
   // Initial paint
   (function init() {
     renderLocal();
