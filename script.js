@@ -226,7 +226,7 @@ driftFromTone(tone);
     updateBeamTone(); // keep beam responsive to new reflections
   }
 
-// === Stage 4.4 — Core Reflection Bridge ===
+// === Stage 4.4 — Core Reflection Bridge (Stabilized) ===
 async function syncCoreMemory() {
   const base = apiBase();
   if (!base) return;
@@ -234,27 +234,53 @@ async function syncCoreMemory() {
   try {
     const res = await fetch(`${base}/memory`);
     if (!res.ok) throw new Error("syncCoreMemory failed");
-    let serverItems = await res.json();
-if (serverItems && !Array.isArray(serverItems)) {
-  // Handle possible wrapped structure { items: [...] }
-  if (Array.isArray(serverItems.items)) {
-    serverItems = serverItems.items;
-  } else {
-    console.warn("Lucen17 Core Bridge: unexpected server format:", serverItems);
-    serverItems = [];
-  }
-}
 
+    let data = await res.json();
+
+    // Defensive parsing: ensure serverItems is always an array
+    let serverItems = [];
+    if (Array.isArray(data)) {
+      serverItems = data;
+    } else if (data && Array.isArray(data.items)) {
+      serverItems = data.items;
+    } else if (typeof data === "object" && data !== null) {
+      // fallback for weird backend shapes
+      for (const key in data) {
+        if (Array.isArray(data[key])) {
+          serverItems = data[key];
+          break;
+        }
+      }
+    }
+
+    if (!Array.isArray(serverItems)) {
+      console.warn("Lucen17 Core Bridge: Invalid serverItems type:", typeof serverItems, data);
+      serverItems = [];
+    }
 
     const localItems = JSON.parse(localStorage.getItem(memoryKey) || "[]");
 
-    // merge unique reflections by timestamp
+    // merge unique reflections by timestamp + text
     const merged = [...localItems];
-    serverItems.forEach(item => {
+    for (const item of serverItems) {
       if (!merged.some(m => m.ts === item.ts && m.text === item.text)) {
         merged.push(item);
       }
-    });
+    }
+
+    // sort newest first
+    merged.sort((a, b) => new Date(b.ts) - new Date(a.ts));
+    localStorage.setItem(memoryKey, JSON.stringify(merged));
+
+    renderLocal();
+    updateSyncIndicator(true);
+  } catch (e) {
+    console.warn("Lucen17 Core Bridge error:", e);
+    updateSyncIndicator(false);
+    // fallback to local reflections
+    renderLocal();
+  }
+}
 
     // sort newest first
     merged.sort((a, b) => new Date(b.ts) - new Date(a.ts));
