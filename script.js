@@ -215,6 +215,38 @@
     updateBeamTone(); // keep beam responsive to new reflections
   }
 
+// === Stage 4.4 — Core Reflection Bridge ===
+async function syncCoreMemory() {
+  const base = apiBase();
+  if (!base) return;
+
+  try {
+    const res = await fetch(`${base}/memory`);
+    if (!res.ok) throw new Error("syncCoreMemory failed");
+    const serverItems = await res.json();
+
+    const localItems = JSON.parse(localStorage.getItem(memoryKey) || "[]");
+
+    // merge unique reflections by timestamp
+    const merged = [...localItems];
+    serverItems.forEach(item => {
+      if (!merged.some(m => m.ts === item.ts && m.text === item.text)) {
+        merged.push(item);
+      }
+    });
+
+    // sort newest first
+    merged.sort((a, b) => new Date(b.ts) - new Date(a.ts));
+    localStorage.setItem(memoryKey, JSON.stringify(merged));
+
+    renderLocal();
+    updateSyncIndicator(true);
+  } catch (e) {
+    console.warn("Lucen17 Core Bridge error:", e);
+    updateSyncIndicator(false);
+  }
+}
+  
   // Guidance drift
   function driftFromTone(tone) {
     if ((localStorage.getItem(modeKey) || 'Guidance') !== 'Guidance') return;
