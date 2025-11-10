@@ -548,6 +548,14 @@ window.addEventListener("DOMContentLoaded", () => {
   broadcastPulse(); // run immediately on load
 })();
 
+// === Core Sync Indicator ===
+function pulseCoreSync() {
+  const dot = document.getElementById("coreSyncDot");
+  if (!dot) return;
+  dot.style.color = "#00ff7f"; // green flash
+  setTimeout(() => (dot.style.color = "#888"), 1200); // fade back to grey
+}
+
   // Initial paint
   (function init() {
     renderLocal();
