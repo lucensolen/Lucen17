@@ -279,6 +279,9 @@ async function syncCoreMemory() {
 
   // Passive breathing (Guidance)
   setInterval(() => {
+    // periodic sync with Lucen Core every 30 seconds
+setInterval(syncCoreMemory, 30000);
+
     if ((localStorage.getItem(modeKey) || 'Guidance') !== 'Guidance') return;
     const rc = Number(localStorage.getItem(rcKey) || dialRC?.value || 50);
     const ge = Number(localStorage.getItem(geKey) || dialGE?.value || 50);
