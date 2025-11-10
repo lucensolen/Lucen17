@@ -183,7 +183,14 @@
     if (!text) return alert('Enter a reflection first.');
 
     const tone  = classifyTone(text);
-    const entry = { text, tone, ts: new Date().toISOString(), deviceId: 'lucen17-ui' };
+    const entry = {
+  text,
+  tone,
+  ts: new Date().toISOString(),
+  deviceId: "lucen17-ui",
+  location: null // placeholder for future what3states integration
+};
+
 
     const base = apiBase() || 'https://lucen17-backend.onrender.com';
     try {
