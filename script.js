@@ -267,7 +267,12 @@ async function syncCoreMemory() {
   try {
     const res = await fetch(`${base}/memory`);
     if (!res.ok) throw new Error("syncCoreMemory failed");
-    const serverItems = await res.json();
+    if (!Array.isArray(serverItems)) {
+    const resData = await res.json();
+const serverItems = Array.isArray(resData) ? resData : resData.items || [];
+
+ 
+
 
 if (!Array.isArray(serverItems)) {
   console.warn("Lucen17 Core Bridge: serverItems not array, skipping sync", serverItems);
