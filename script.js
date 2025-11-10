@@ -210,8 +210,12 @@
       setTimeout(() => (ta.placeholder = 'Type reflection...'), 1200);
     }
 
-    renderLocal();
-    driftFromTone(tone);
+    // Refresh memory display instantly
+renderLocal();
+pulseCoreSync(); // flash sync indicator
+
+// Guidance drift influence
+driftFromTone(tone);
     updateBeamTone(); // keep beam responsive to new reflections
   }
 
