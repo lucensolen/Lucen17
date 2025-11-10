@@ -567,6 +567,14 @@ function pulseCoreSync() {
   setTimeout(() => (dot.style.color = "#888"), 1200); // fade back to grey
 }
 
+// --- Temporary CoreSyncDot click alert ---
+const dot = document.getElementById("coreSyncDot");
+if (dot) {
+  dot.addEventListener("click", () => {
+    alert("Lucen World Map: coming online soon 🌍");
+  });
+}
+
 // === Stage 4.5 — Lucen Core Dot Evolution ===
 
 // Track incoming Lucen updates (for gentle glow)
