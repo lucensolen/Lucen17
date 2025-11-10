@@ -210,39 +210,6 @@
     arr.push(entry);
     if (arr.length > 5000) arr.splice(0, arr.length - 5000);
     localStorage.setItem(memoryKey, JSON.stringify(arr));
-    broadcastReflection(entry); // send reflection to the routing system
-    
-    // === Reflection Broadcast System ===
-function broadcastReflection(entry) {
-  const divSel = document.getElementById("divisionSelect");
-  const scopeSel = document.getElementById("scopeSelect");
-  const division = divSel ? divSel.value : "nucleos";
-  const scope = scopeSel ? scopeSel.value : "division";
-
-  const payload = {
-    type: "lucenUpdate",
-    payload: {
-      text: entry.text,
-      tone: entry.tone,
-      ts: entry.ts || new Date().toISOString(),
-      division,
-      scope,
-      origin: "Lucen17 Core",
-      beam: (typeof currentBeamColor === "function")
-        ? currentBeamColor()
-        : "#00f7ff"
-    }
-  };
-
-  console.log(`📡 Broadcast → ${scope} :: ${division}`, payload);
-  window.postMessage(payload, "*");
-
-  try {
-    navigator.serviceWorker?.controller?.postMessage(payload);
-  } catch (e) {
-    console.warn("Broadcast to SW failed:", e);
-  }
-}
 
     if (ta) {
       ta.value = '';
@@ -267,17 +234,7 @@ async function syncCoreMemory() {
   try {
     const res = await fetch(`${base}/memory`);
     if (!res.ok) throw new Error("syncCoreMemory failed");
-    if (!Array.isArray(serverItems)) {
-    const resData = await res.json();
-const serverItems = Array.isArray(resData) ? resData : resData.items || [];
-
- 
-
-
-if (!Array.isArray(serverItems)) {
-  console.warn("Lucen17 Core Bridge: serverItems not array, skipping sync", serverItems);
-  return;
-}
+    const serverItems = await res.json();
 
     const localItems = JSON.parse(localStorage.getItem(memoryKey) || "[]");
 
